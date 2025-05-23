@@ -1,7 +1,11 @@
 import requests
 dados_api = []
 
-def requisicao(pais):
+
+def relatorioDados(nome, nome_ofc, capital, continente, regiao, sub_reg, populacao, area, idioma, fuso, url_bandeira, moeda_nome, moeda_simb, lingua):
+    pass
+
+def solicitaDados(pais):
     url = "https://restcountries.com/v3.1/name/{pais}"
     resposta = requests.get(url)
 
@@ -17,3 +21,33 @@ def requisicao(pais):
     pais = dados[0]
 
     try:
+        nome = pais['name']['common'] # esta contido dentro de um dicionário, sendo assim acessamos pela chave que retorna o valor
+        nome_ofc = pais['name']['official']
+        capital = pais.get('capital', ['Sem capital'])[0] # Só necessário caso o campo esteja vazio. E capital nos retorna uma lista, por essa razão o zero
+        # "capital": ["Brasília"]
+        continente = pais.get('continents'['Desconhecido'])[0]
+        regiao =  pais['region']
+        sub_reg = pais['subregion']
+        populacao = pais['population'] 
+        area = pais['area']
+        idioma = list(lingua.values())[0] if lingua else 'Sem idioma' 
+        fuso = pais['timezones'][0]
+        url_bandeira = pais.get('flags',{}).get('png','Sem URL') # Entramos no dicionário com nome flag me pais, caso não exista devolvemos {}. depois acessamos a chave png
+
+        currencies = pais.get('currencies',{}) # Estamos pegando o dicionário completo de currencies, caso não exista o deixamos vazio.
+        if currencies:
+            moeda_info = list(currencies.values())[0] # Estamos acessando as informações de moesda, tranformando em lista por assim será fácil pegar o indice 0 que representa a moeda principa
+            moeda_nome = moeda_info('name', 'Desconhecido') # Dentro de moeda_info pegamos o nome dela
+            moeda_simb = moeda_info('symbol', 'N/A')
+
+        lingua = pais.get('languages',{}) # Pegamos o dicionário ou lista completa com a chave languages
+        #Aqui está tranformando em lista o valor de languages e pegando exatamente o índice 0 que representa o idioma principal,
+        #depois checa se a variável está vazia, se sim ela passa a valer sem idioma
+
+        relatorioDados(nome, nome_ofc, capital, continente,
+                       regiao, sub_reg, populacao, area, 
+                       idioma, fuso, url_bandeira,
+                       moeda_nome, moeda_simb, lingua)
+    except Exception as e:
+        print({"Erro ao processar os dados":str(e)})
+
