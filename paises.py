@@ -1,8 +1,6 @@
 import requests
 import sqlite3
 import pandas as pd
-from openpyxl import load_workbook
-from openpyxl.styles import Font
 dados_api = []
 
 #gerarRelatorioPaises
@@ -57,9 +55,9 @@ def gerarRelatorioPaises(nome, nome_ofc, capital, continente, regiao, sub_reg, p
         'Fuso Horário': fuso,
         'URL da Bandeira': url_bandeira
     })
-    # df = pd.DataFrame(dados_api)
+    df = pd.DataFrame(dados_api)
 
-    # df.to_excel('relatorioProjeto.xlsx', index=False, engine='openpyxl')
+    df.to_excel('relatorioProjeto.xlsx', index=False, engine='openpyxl')
     # wb = load_workbook('relatorioProjeto.xlsx')
     # ws = wb.active
 
@@ -67,6 +65,7 @@ def gerarRelatorioPaises(nome, nome_ofc, capital, continente, regiao, sub_reg, p
     #     call.font = Font(bold=True)
     # wb.save('paises_formatados')
     # print(f"Dados do país {nome} armazenados.")
+    print(f"Dados do país {nome} armazenados.")
 
 def solicitaDados(pais):
     url = f"https://restcountries.com/v3.1/name/{pais}"

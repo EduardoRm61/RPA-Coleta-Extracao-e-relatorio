@@ -41,17 +41,17 @@ def gerarRelatorioLivros(titulo, preco, disponibilidade, estrela):
     })
 
 
-    # df_livros = pd.DataFrame(dados)
+    df_livros = pd.DataFrame(dados)
 
-    # #%Y = ano com 4 dígitos. %m = mês com dois dígitos...
-    # agora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    #%Y = ano com 4 dígitos. %m = mês com dois dígitos...
+    agora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-    # df_info = pd.DataFrame([["Este relatório foi gerado ", agora]], columns=["Informação", "Data"])
+    df_info = pd.DataFrame([["Este relatório foi gerado ", agora]], columns=["Informação", "Data"])
 
-    # df_final = pd.concat([df_info, pd.DataFrame([[]]), df_livros], ignore_index=True)
+    df_final = pd.concat([df_info, pd.DataFrame([[]]), df_livros], ignore_index=True)
 
-    # # Junção
-    # df_final.to_excel('livros.xlsx', index=False, engine='openpyxl')
+    # Junção
+    df_final.to_excel('livros.xlsx', index=False, engine='openpyxl')
     
     # df = pd.DataFrame(dados_api)
     # df.to_excel('relatorioProjeto.xlsx', index=False, engine='openpyxl')
@@ -61,7 +61,7 @@ def extrairDados(url_base):
     soup = BeautifulSoup(resposta.text, 'html.parser')
 
     livros = soup.find_all('article', class_='product_pod')
-    
+    dados = []
     for livro in livros[:10]:
         titulo = livro.h3.a['title']
         preco = livro.find('p', class_='price_color').text
@@ -81,7 +81,18 @@ def extrairDados(url_base):
 
         gerarRelatorioLivros(titulo, preco, disponibilidade, estrelas)
 
+extrairDados(url)
 
+visualizar = sqlite3.connect('livraria.db')
+cursor = visualizar.cursor()
 
-    
-# extrairDados(url)
+print("Visualizando tabelas existentes: ")
+cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+print(cursor.fetchall())
+
+print("Visualizar dados da tabela: ")
+cursor.execute("SELECT * FROM livros")
+for linha in cursor.fetchall():
+    print(linha)
+
+visualizar.close()
