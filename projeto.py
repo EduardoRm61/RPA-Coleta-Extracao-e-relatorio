@@ -40,6 +40,22 @@ def relatorioDados(nome, nome_ofc, capital, continente, regiao, sub_reg, populac
     conexao.commit() #Estamos deixando registrado nossa ação no banco de dados
     conexao.close()
 
+    dados_api.append({
+        'Nome': nome,
+        'Nome Oficial': nome_ofc,
+        'Capital': capital,
+        'Continente': continente,
+        'Região': regiao,
+        'Sub-Região': sub_reg,
+        'População': populacao,
+        'Área': area,
+        'Moeda': moeda_nome,
+        "Símbolo da Moeda": moeda_simb,
+        'Idioma': idioma,
+        'Fuso Horário': fuso,
+        'URL da Bandeira': url_bandeira
+    })
+
     print(f"Dados do país {nome} armazenados.")
 
 def solicitaDados(pais):
