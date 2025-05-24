@@ -1,9 +1,41 @@
 import requests
+import sqlite3
+import pandas as pd
 dados_api = []
 
 
 def relatorioDados(nome, nome_ofc, capital, continente, regiao, sub_reg, populacao, area, idioma, fuso, url_bandeira, moeda_nome, moeda_simb, lingua):
-    pass
+    conexao = sqlite3.connect("paises.db") #Abrimos ou criamos um arquivo com extensão ao BD chamado paises. Também criamos um obj chamado extensão
+    cursor = conexao.cursor() # Criamos um cursor, um objeto intermediario para executar comandos SQL dentro do BD. Com ele podemos fazer CREAT TABLE, INSERT INT, SELECT
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS paises(
+                id INTEREGER PRIMARY KEY AUTOINCREMENT,
+                nome TEXT,
+                nome_oficial TEXT,
+                capital TEXT,
+                continente TEXT,
+                regiao TEXT,
+                sub_regiao TEXT,
+                populacao INTEGER,
+                area REAL,
+                moeda_nome TEXT,
+                moeda_simbolo TEXT,
+                idioma TEXT,
+                fuso TEXT,
+                url_bandeira TEXT
+            )
+        ''')
+    
+    cursor.execute('''
+        INSERT INTO paises(
+                   nome, nome_oficial, capital, continente, regiao, sub_regiao,
+                   populacao, area, moeda_nome, moeda_simbolo, idioma, fuso, url_bandeira
+                   ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
+                ''', (
+                    nome, nome_ofc, capital, continente, regiao, sub_reg,
+                    populacao, area, moeda_nome, moeda_simb, idioma, fuso, url_bandeira
+                ))
 
 def solicitaDados(pais):
     url = "https://restcountries.com/v3.1/name/{pais}"
