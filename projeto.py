@@ -103,3 +103,11 @@ def solicitaDados(pais):
     except Exception as e:
         print({"Erro ao processar os dados":str(e)})
 
+
+pais = input("Digite o nome do País em Inglês: ")
+solicitaDados(pais)
+
+for i in range(2):
+    pais = input("Digite o nome de outro País, também em Inglês: ")
+    solicitaDados(pais)
+
