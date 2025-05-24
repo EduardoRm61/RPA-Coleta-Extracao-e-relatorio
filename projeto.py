@@ -1,6 +1,8 @@
 import requests
 import sqlite3
 import pandas as pd
+from openpyxl import load_workbook
+from openpyxl.styles import Font
 dados_api = []
 
 
@@ -55,7 +57,15 @@ def relatorioDados(nome, nome_ofc, capital, continente, regiao, sub_reg, populac
         'Fuso Horário': fuso,
         'URL da Bandeira': url_bandeira
     })
+    df = pd.DataFrame(dados_api)
 
+    df.to_excel('relatorioProjeto.xlsx', index=False, engine='openpyxl')
+    # wb = load_workbook('relatorioProjeto.xlsx')
+    # ws = wb.active
+
+    # for call in ws[1]:
+    #     call.font = Font(bold=True)
+    # wb.save('paises_formatados')
     print(f"Dados do país {nome} armazenados.")
 
 def solicitaDados(pais):

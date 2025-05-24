@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import sqlite3
 
 url = 'https://books.toscrape.com/'
+dados = []
 
 def registrarDados(titulo, preco, disponibilidade, estrela):
     conexao = sqlite3.connect('livraria.db')
@@ -29,12 +30,13 @@ def registrarDados(titulo, preco, disponibilidade, estrela):
     conexao.commit()
     conexao.close()
 
+
 def extrairDados(url_base):
     resposta = requests.get(url_base)
     soup = BeautifulSoup(resposta.text, 'html.parser')
 
     livros = soup.find_all('article', class_='product_pod')
-    dados = []
+    
     for livro in livros[:10]:
         titulo = livro.h3.a['title']
         preco = livro.find('p', class_='price_color').text
@@ -53,6 +55,7 @@ def extrairDados(url_base):
         estrelas = mapa_estrela.get(estrela_text, 0)
 
         registrarDados(titulo, preco, disponibilidade, estrelas)
+
 
 
     
