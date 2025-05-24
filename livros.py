@@ -9,7 +9,7 @@ from datetime import datetime
 url = 'https://books.toscrape.com/'
 dados = []
 
-def registrarDados(titulo, preco, disponibilidade, estrela):
+def gerarRelatorioLivros(titulo, preco, disponibilidade, estrela):
     conexao = sqlite3.connect('livraria.db')
     cursor = conexao.cursor()
 
@@ -76,7 +76,7 @@ def extrairDados(url_base):
         }
         estrelas = mapa_estrela.get(estrela_text, 0)
 
-        registrarDados(titulo, preco, disponibilidade, estrelas)
+        gerarRelatorioLivros(titulo, preco, disponibilidade, estrelas)
 
 
 

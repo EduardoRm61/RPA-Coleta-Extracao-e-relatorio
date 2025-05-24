@@ -7,7 +7,7 @@ dados_api = []
 
 
 
-def relatorioDados(nome, nome_ofc, capital, continente, regiao, sub_reg, populacao, area, idioma, moeda_nome, moeda_simb, fuso, url_bandeira):
+def gerarRelatoriPaises(nome, nome_ofc, capital, continente, regiao, sub_reg, populacao, area, idioma, moeda_nome, moeda_simb, fuso, url_bandeira):
     conexao = sqlite3.connect("paises.db") #Abrimos ou criamos um arquivo com extensão ao BD chamado paises. Também criamos um obj chamado extensão
     cursor = conexao.cursor() # Criamos um cursor, um objeto intermediario para executar comandos SQL dentro do BD. Com ele podemos fazer CREAT TABLE, INSERT INT, SELECT
 
@@ -108,7 +108,7 @@ def solicitaDados(pais):
 
         
 
-        relatorioDados(nome, nome_ofc, capital, continente, regiao,
+        gerarRelatoriPaises(nome, nome_ofc, capital, continente, regiao,
                         sub_reg, populacao, area, idioma, moeda_nome,
                         moeda_simb, fuso, url_bandeira)
     except Exception as e:
