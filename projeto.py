@@ -3,6 +3,10 @@ import sqlite3
 import pandas as pd
 dados_api = []
 
+# - Título
+# - Preço
+# - Avaliação (estrelas)
+# - Disponibilidade
 
 def relatorioDados(nome, nome_ofc, capital, continente, regiao, sub_reg, populacao, area, idioma, fuso, url_bandeira, moeda_nome, moeda_simb, lingua):
     conexao = sqlite3.connect("paises.db") #Abrimos ou criamos um arquivo com extensão ao BD chamado paises. Também criamos um obj chamado extensão
