@@ -40,7 +40,7 @@ def relatorioDados(nome, nome_ofc, capital, continente, regiao, sub_reg, populac
     conexao.commit() #Estamos deixando registrado nossa ação no banco de dados
     conexao.close()
 
-    print(f"Dados do país {nome} armazenamos.")
+    print(f"Dados do país {nome} armazenados.")
 
 def solicitaDados(pais):
     url = f"https://restcountries.com/v3.1/name/{pais}"
@@ -101,5 +101,14 @@ for i in range(2):
 visualizar = sqlite3.connect('paises.db')
 cursor = visualizar.cursor()
 
+print("Tabelas existentes: ")
 cursor.execute('SELECT * FROM  paises')
+for linha in cursor.fetchall():
+    print(linha)
+
+    
+print("Dados existentes nas tabelas: ")
+cursor.execute("SELET name FROM sqlite_master WHERE type ='table';")
 print(cursor.fetchall())
+
+visualizar.close()
