@@ -36,6 +36,13 @@ def relatorioDados(nome, nome_ofc, capital, continente, regiao, sub_reg, populac
                     nome, nome_ofc, capital, continente, regiao, sub_reg,
                     populacao, area, moeda_nome, moeda_simb, idioma, fuso, url_bandeira
                 ))
+    conexao.commit() #Estamos deixando registrado nossa ação no banco de dados
+    conexao.close()
+
+    dados_api.append({
+        'Nome': nome,
+        
+    })
 
 def solicitaDados(pais):
     url = "https://restcountries.com/v3.1/name/{pais}"
