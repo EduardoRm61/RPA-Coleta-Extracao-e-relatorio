@@ -51,7 +51,7 @@ def gerarRelatorioLivros(titulo, preco, disponibilidade, estrela):
     df_final = pd.concat([df_info, pd.DataFrame([[]]), df_livros], ignore_index=True)
 
     # Junção
-    df_final.to_excel('livros.xlsx', index=False, engine='openpyxl')
+    df_final.to_excel('livrosRelatorio.xlsx', index=False, engine='openpyxl')
     
     # df = pd.DataFrame(dados_api)
     # df.to_excel('relatorioProjeto.xlsx', index=False, engine='openpyxl')

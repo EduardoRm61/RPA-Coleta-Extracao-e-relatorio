@@ -1,6 +1,10 @@
 import requests
 import sqlite3
 import pandas as pd
+from bs4 import BeautifulSoup
+from openpyxl import load_workbook
+from datetime import datetime
+
 dados_api = []
 
 #gerarRelatorioPaises
@@ -57,7 +61,7 @@ def gerarRelatorioPaises(nome, nome_ofc, capital, continente, regiao, sub_reg, p
     })
     df = pd.DataFrame(dados_api)
 
-    df.to_excel('relatorioProjeto.xlsx', index=False, engine='openpyxl')
+    df.to_excel('paisesRelatorio.xlsx', index=False, engine='openpyxl')
     # wb = load_workbook('relatorioProjeto.xlsx')
     # ws = wb.active
 
@@ -114,3 +118,116 @@ def solicitaDados(pais):
         print({"Erro ao processar os dados":str(e)})
 
 
+url = 'https://books.toscrape.com/'
+dados = []
+
+def gerarRelatorioLivros(titulo, preco, disponibilidade, estrela):
+    conexao = sqlite3.connect('livraria.db')
+    cursor = conexao.cursor()
+
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS livros(
+                   id INTEGER PRIMARY KEY AUTOINCREMENT,
+                   titulo TEXT,
+                   preco TEXT,
+                   disponibilidade TEXT,
+                   estrela INTEGER
+                   )
+            ''')
+    cursor.execute('''
+        INSERT INTO livros(
+                   titulo, preco,
+                   disponibilidade, estrela
+                   ) VALUES (?,?,?,?)
+                   ''',(
+                       titulo, preco, disponibilidade, estrela
+                   ))
+    conexao.commit()
+    conexao.close()
+
+    dados.append({
+        'Título':titulo,
+        'Preço': preco,
+        'Disponibilidade': disponibilidade,
+        'Estrelas': estrela
+    })
+
+
+    df_livros = pd.DataFrame(dados)
+
+    #%Y = ano com 4 dígitos. %m = mês com dois dígitos...
+    agora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+    df_info = pd.DataFrame([["Este relatório foi gerado ", agora]], columns=["Informação", "Data"])
+
+    df_final = pd.concat([df_info, pd.DataFrame([[]]), df_livros], ignore_index=True)
+
+    # Junção
+    df_final.to_excel('livrosRelatorio.xlsx', index=False, engine='openpyxl')
+    
+    # df = pd.DataFrame(dados_api)
+    # df.to_excel('relatorioProjeto.xlsx', index=False, engine='openpyxl')
+
+def extrairDados(url_base):
+    resposta = requests.get(url_base)
+    soup = BeautifulSoup(resposta.text, 'html.parser')
+
+    livros = soup.find_all('article', class_='product_pod')
+    dados = []
+    for livro in livros[:10]:
+        titulo = livro.h3.a['title']
+        preco = livro.find('p', class_='price_color').text
+        disponibilidade = livro.find('p', class_='instock availability').text.strip()
+
+        estrela_tag = livro.find('p', class_='star-rating')
+        estrela_text = estrela_tag.get('class')[1]
+
+        mapa_estrela = {
+            'One': 1,
+            'Two': 2,
+            'Three': 3,
+            'Four': 4,
+            'Five': 5
+        }
+        estrelas = mapa_estrela.get(estrela_text, 0)
+
+        gerarRelatorioLivros(titulo, preco, disponibilidade, estrelas)
+
+extrairDados(url)
+
+visualizar = sqlite3.connect('livraria.db')
+cursor = visualizar.cursor()
+
+print("Visualizando tabelas existentes: ")
+cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+print(cursor.fetchall())
+
+print("Visualizar dados da tabela: ")
+cursor.execute("SELECT * FROM livros")
+for linha in cursor.fetchall():
+    print(linha)
+
+visualizar.close()
+
+
+pais = input("Digite o nome do País em Inglês: ")
+solicitaDados(pais)
+
+for i in range(2):
+    pais = input("Digite o nome de outro País, também em Inglês: ")
+    solicitaDados(pais)
+
+visualizar = sqlite3.connect('paises.db')
+cursor = visualizar.cursor()
+
+print("Tabelas existentes: ")
+cursor.execute('SELECT * FROM  paises')
+for linha in cursor.fetchall():
+    print(linha)
+
+
+print("Dados existentes nas tabelas: ")
+cursor.execute("SELECT name FROM sqlite_master WHERE type ='table';")
+print(cursor.fetchall())
+
+visualizar.close()
