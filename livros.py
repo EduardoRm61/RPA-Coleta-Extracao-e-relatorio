@@ -21,4 +21,25 @@ def extrairDados(url_base, url_pag):
     for livro in livros:
         titulo = livro.h3.a['title']
         preco = livro.find('p', class_='price_color').text
-        
+        dispoibilidade = livro.find('p', class_='instock availability').text
+
+        estrela_tag = livro.find('p', class_='star-rating')
+        estrela_text = estrela_tag.get('class')[1]
+
+        mapa_estrela = {
+            'One': 1,
+            'Two': 2,
+            'Three': 3,
+            'Four': 4,
+            'FIve': 5
+        }
+        estrelas = mapa_estrela.get(estrela_text, 0)
+
+        dados.append({
+            'Título': titulo,
+            'Preço': preco,
+            'Disponibilidade': dispoibilidade,
+            'Estrelas': estrelas
+        })
+
+        return dados
