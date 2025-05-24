@@ -2,6 +2,9 @@ import requests
 import pandas as pd
 from bs4 import BeautifulSoup
 import sqlite3
+from openpyxl import load_workbook
+from datetime import datetime
+
 
 url = 'https://books.toscrape.com/'
 dados = []
@@ -30,6 +33,25 @@ def registrarDados(titulo, preco, disponibilidade, estrela):
     conexao.commit()
     conexao.close()
 
+    dados.append({
+        'Título':titulo,
+        'Preço': preco,
+        'Disponibilidade': disponibilidade,
+        'Estrelas': estrela
+    })
+
+
+    df_livros = pd.DataFrame(dados)
+
+    #%Y = ano com 4 dígitos. %m = mês com dois dígitos...
+    agora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+
+    df_info = pd.DataFrame([["Este relatório foi gerado ", agora]], columns=["Informação", "Data"])
+
+    df_final = pd.concat([df_info, pd.DataFrame([[]]), df_livros], ignore_index=True)
+
+    # Junção
+    df_final.to_excel('livros.xlsx', index=False, engine='openpyxl')
 
 def extrairDados(url_base):
     resposta = requests.get(url_base)
@@ -74,3 +96,4 @@ for linha in cursor.fetchall():
     print(linha)
 
 visualizar.close()
+
