@@ -41,17 +41,20 @@ def gerarRelatorioLivros(titulo, preco, disponibilidade, estrela):
     })
 
 
-    df_livros = pd.DataFrame(dados)
+    # df_livros = pd.DataFrame(dados)
 
-    #%Y = ano com 4 dígitos. %m = mês com dois dígitos...
-    agora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
+    # #%Y = ano com 4 dígitos. %m = mês com dois dígitos...
+    # agora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
 
-    df_info = pd.DataFrame([["Este relatório foi gerado ", agora]], columns=["Informação", "Data"])
+    # df_info = pd.DataFrame([["Este relatório foi gerado ", agora]], columns=["Informação", "Data"])
 
-    df_final = pd.concat([df_info, pd.DataFrame([[]]), df_livros], ignore_index=True)
+    # df_final = pd.concat([df_info, pd.DataFrame([[]]), df_livros], ignore_index=True)
 
-    # Junção
-    df_final.to_excel('livros.xlsx', index=False, engine='openpyxl')
+    # # Junção
+    # df_final.to_excel('livros.xlsx', index=False, engine='openpyxl')
+    
+    # df = pd.DataFrame(dados_api)
+    # df.to_excel('relatorioProjeto.xlsx', index=False, engine='openpyxl')
 
 def extrairDados(url_base):
     resposta = requests.get(url_base)

@@ -5,9 +5,9 @@ from openpyxl import load_workbook
 from openpyxl.styles import Font
 dados_api = []
 
+#gerarRelatorioPaises
 
-
-def gerarRelatoriPaises(nome, nome_ofc, capital, continente, regiao, sub_reg, populacao, area, idioma, moeda_nome, moeda_simb, fuso, url_bandeira):
+def gerarRelatorioPaises(nome, nome_ofc, capital, continente, regiao, sub_reg, populacao, area, idioma, moeda_nome, moeda_simb, fuso, url_bandeira):
     conexao = sqlite3.connect("paises.db") #Abrimos ou criamos um arquivo com extensão ao BD chamado paises. Também criamos um obj chamado extensão
     cursor = conexao.cursor() # Criamos um cursor, um objeto intermediario para executar comandos SQL dentro do BD. Com ele podemos fazer CREAT TABLE, INSERT INT, SELECT
 
@@ -57,16 +57,16 @@ def gerarRelatoriPaises(nome, nome_ofc, capital, continente, regiao, sub_reg, po
         'Fuso Horário': fuso,
         'URL da Bandeira': url_bandeira
     })
-    df = pd.DataFrame(dados_api)
+    # df = pd.DataFrame(dados_api)
 
-    df.to_excel('relatorioProjeto.xlsx', index=False, engine='openpyxl')
+    # df.to_excel('relatorioProjeto.xlsx', index=False, engine='openpyxl')
     # wb = load_workbook('relatorioProjeto.xlsx')
     # ws = wb.active
 
     # for call in ws[1]:
     #     call.font = Font(bold=True)
     # wb.save('paises_formatados')
-    print(f"Dados do país {nome} armazenados.")
+    # print(f"Dados do país {nome} armazenados.")
 
 def solicitaDados(pais):
     url = f"https://restcountries.com/v3.1/name/{pais}"
@@ -108,31 +108,10 @@ def solicitaDados(pais):
 
         
 
-        gerarRelatoriPaises(nome, nome_ofc, capital, continente, regiao,
+        gerarRelatorioPaises(nome, nome_ofc, capital, continente, regiao,
                         sub_reg, populacao, area, idioma, moeda_nome,
                         moeda_simb, fuso, url_bandeira)
     except Exception as e:
         print({"Erro ao processar os dados":str(e)})
 
 
-pais = input("Digite o nome do País em Inglês: ")
-solicitaDados(pais)
-
-for i in range(2):
-    pais = input("Digite o nome de outro País, também em Inglês: ")
-    solicitaDados(pais)
-
-visualizar = sqlite3.connect('paises.db')
-cursor = visualizar.cursor()
-
-print("Tabelas existentes: ")
-cursor.execute('SELECT * FROM  paises')
-for linha in cursor.fetchall():
-    print(linha)
-
-
-print("Dados existentes nas tabelas: ")
-cursor.execute("SELECT name FROM sqlite_master WHERE type ='table';")
-print(cursor.fetchall())
-
-visualizar.close()
