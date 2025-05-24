@@ -81,19 +81,4 @@ def extrairDados(url_base):
 
 
     
-extrairDados(url)
-
-visualizar = sqlite3.connect('livraria.db')
-cursor = visualizar.cursor()
-
-print("Visualizando tabelas existentes: ")
-cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-print(cursor.fetchall())
-
-print("Visualizar dados da tabela: ")
-cursor.execute("SELECT * FROM livros")
-for linha in cursor.fetchall():
-    print(linha)
-
-visualizar.close()
-
+# extrairDados(url)
