@@ -106,9 +106,9 @@ cursor.execute('SELECT * FROM  paises')
 for linha in cursor.fetchall():
     print(linha)
 
-    
+
 print("Dados existentes nas tabelas: ")
-cursor.execute("SELET name FROM sqlite_master WHERE type ='table';")
+cursor.execute("SELECT name FROM sqlite_master WHERE type ='table';")
 print(cursor.fetchall())
 
 visualizar.close()

@@ -13,7 +13,7 @@ def registrarDados(titulo, preco, disponibilidade, estrela):
         CREATE TABLE IF NOT EXISTS livros(
                    id INTEGER PRIMARY KEY AUTOINCREMENT,
                    titulo TEXT,
-                   preco REAL,
+                   preco TEXT,
                    disponibilidade TEXT,
                    estrela INTEGER
                    )
@@ -37,8 +37,8 @@ def extrairDados(url_base):
     dados = []
     for livro in livros[:10]:
         titulo = livro.h3.a['title']
-        preco = float(livro.find('p', class_='price_color').text.strip()[1:])
-        disponibilidade = livro.find('p', class_='instock availability').text
+        preco = livro.find('p', class_='price_color').text
+        disponibilidade = livro.find('p', class_='instock availability').text.strip()
 
         estrela_tag = livro.find('p', class_='star-rating')
         estrela_text = estrela_tag.get('class')[1]
@@ -53,12 +53,12 @@ def extrairDados(url_base):
         estrelas = mapa_estrela.get(estrela_text, 0)
 
         registrarDados(titulo, preco, disponibilidade, estrelas)
-        print(f'Dados de livros inseridos com êxito!')
+
 
     
 extrairDados(url)
 
-visualizar = sqlite3.connect('livraria.bd')
+visualizar = sqlite3.connect('livraria.db')
 cursor = visualizar.cursor()
 
 print("Visualizando tabelas existentes: ")
@@ -66,7 +66,7 @@ cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
 print(cursor.fetchall())
 
 print("Visualizar dados da tabela: ")
-cursor.execute("SELECT * FROM paises")
+cursor.execute("SELECT * FROM livros")
 for linha in cursor.fetchall():
     print(linha)
 
