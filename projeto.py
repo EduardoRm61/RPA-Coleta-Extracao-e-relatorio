@@ -5,11 +5,10 @@ from bs4 import BeautifulSoup
 from openpyxl import load_workbook
 from datetime import datetime
 
-dados_api = []
 url = 'https://books.toscrape.com/'
 dados = []
+dados_api = []
 
-#gerarRelatorioPaises
 
 def gerarRelatorioPaises(nome, nome_ofc, capital, continente, regiao, sub_reg, populacao, area, idioma, moeda_nome, moeda_simb, fuso, url_bandeira):
     conexao = sqlite3.connect("paises.db") #Abrimos ou criamos um arquivo com extensão ao BD chamado paises. Também criamos um obj chamado extensão
@@ -106,7 +105,7 @@ def gerarRelatorioLivros(titulo, preco, disponibilidade, estrela):
     })
 
 
-    df_livros = pd.DataFrame(dados)
+    #df_livros = pd.DataFrame(dados)
 
     #%Y = ano com 4 dígitos. %m = mês com dois dígitos...
     #agora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
@@ -185,7 +184,6 @@ def extrairDadosPaises(pais):
             moeda_nome = moeda_info.get('name', 'Desconhecido') # Dentro de moeda_info pegamos o nome dela
             moeda_simb = moeda_info.get('symbol', 'N/A')
 
-        
 
         gerarRelatorioPaises(nome, nome_ofc, capital, continente, regiao,
                         sub_reg, populacao, area, idioma, moeda_nome,
@@ -193,12 +191,16 @@ def extrairDadosPaises(pais):
     except Exception as e:
         print({"Erro ao processar os dados":str(e)})
 
-def gerar_relatorio_geral():
+def gerar_relatorio_geral(nome_aluno):
     df_livros = pd.DataFrame(dados)
     df_paises = pd.DataFrame(dados_api)
 
     agora = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
-    df_info = pd.DataFrame([["Este relatório foi gerado em", agora]], columns=["Descrição", "Data e Hora"])
+    #df_info = pd.DataFrame([["Este relatório foi gerado em", agora]], columns=["Descrição", "Data e Hora"])
+    df_info = pd.DataFrame([
+        ["Nome do Aluno", nome_aluno],
+        ["Este relatório foi gerado em", agora]
+    ], columns=["Descrição", "Valor"])
 
     with pd.ExcelWriter("Relatorio_Geral.xlsx", engine="openpyxl") as writer:
         df_info.to_excel(writer, sheet_name="Informações", index=False)
@@ -208,22 +210,7 @@ def gerar_relatorio_geral():
         print("Relatório geral gerado com sucesso: 'Relatorio_Geral.xlsx'")
 
 
-
-extrairDadosLivros(url)
-
-visualizar = sqlite3.connect('livraria.db')
-cursor = visualizar.cursor()
-
-print("Visualizando tabelas existentes: ")
-cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-print(cursor.fetchall())
-
-print("Visualizar dados da tabela: ")
-cursor.execute("SELECT * FROM livros")
-for linha in cursor.fetchall():
-    print(linha)
-
-visualizar.close()
+nome = input("Olá, seja muito bem-vindo, digite o seu nome para Iniciarmos: ")
 
 pais = input("Digite o nome do País em Inglês: ")
 extrairDadosPaises(pais)
@@ -235,17 +222,32 @@ for i in range(2):
 visualizar = sqlite3.connect('paises.db')
 cursor = visualizar.cursor()
 
-print("Tabelas existentes: ")
+print("Tabelas existentes no Banco de dados de Países: ")
 cursor.execute('SELECT * FROM  paises')
 for linha in cursor.fetchall():
     print(linha)
 
 
-print("Dados existentes nas tabelas: ")
+print("Dados existentes nas tabelas de Países: ")
 cursor.execute("SELECT name FROM sqlite_master WHERE type ='table';")
 print(cursor.fetchall())
 
 visualizar.close()
 
-gerar_relatorio_geral()
+extrairDadosLivros(url)
+visualizar = sqlite3.connect('livraria.db')
+cursor = visualizar.cursor()
+
+print("Visualizando tabelas existentes no Banco de dados de Livros: ")
+cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+print(cursor.fetchall())
+
+print("Visualizar dados da tabela de países: ")
+cursor.execute("SELECT * FROM livros")
+for linha in cursor.fetchall():
+    print(linha)
+
+visualizar.close()
+
+gerar_relatorio_geral(nome)
 print("Relatório geral realizado com êxito")
