@@ -250,4 +250,3 @@ for linha in cursor.fetchall():
 visualizar.close()
 
 gerar_relatorio_geral(nome)
-print("Relatório geral realizado com êxito")
